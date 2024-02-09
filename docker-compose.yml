@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+    # MongoDB
+    mongo_db:
+        container_name: db_container
+        image: mongo:latest
+        restart: always
+        ports:
+            - 27017:27017
+
+    # Taxi API
+    api:
+        build:
+            context: .
+            dockerfile: ./docker/api.Dockerfile
+        ports:
+            - 3000:3000
+        environment:
+            PORT: 3000
+            API_MODE: MONGO
+            MONGO_CONNECTION_STRING: mongodb://mongo_db:27017
+        depends_on:
+            - mongo_db
+
+volumes:
+    mongo_data: {}
